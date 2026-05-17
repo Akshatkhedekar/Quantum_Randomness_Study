@@ -12,9 +12,7 @@ Classical computers are deterministic finite-state machines. A PRNG (e.g., Pytho
 
 **Example (simplified Linear Congruential Generator):**
 
-\[
-X_{n+1} = (a \cdot X_n + c) \mod m
-\]
+|ψ⟩ = α|0⟩ + β|1⟩
 
 **Key properties:**
 - **Periodic:** After enough iterations, the sequence repeats.
@@ -31,21 +29,15 @@ Quantum mechanics is intrinsically non-deterministic. Measurement outcomes of a 
 
 A qubit in superposition is in the state:
 
-\[
-|\psi\rangle = \alpha|0\rangle + \beta|1\rangle
-\]
 
-where \(|\alpha|^2 + |\beta|^2 = 1\).
+where |α|² + |β|² = 1.
 
 When measured in the computational basis:
-- Outcome `0` with probability \(|\alpha|^2\)
-- Outcome `1` with probability \(|\beta|^2\)
+- Outcome `0` with probability |α|²
+- Outcome `1` with probability |β|²
 
-If \(\alpha = \beta = \frac{1}{\sqrt{2}}\) (applying a Hadamard gate to \(|0\rangle\)):
-
-\[
-P(0) = 0.5,\quad P(1) = 0.5
-\]
+If α = β = 1/√2 (applying a Hadamard gate to |0⟩):
+P(0) = 0.5, P(1) = 0.5
 
 **Key quantum properties:**
 - **No hidden variables** (per Bell's theorem & experimental violations of local realism) – the outcome is fundamentally random, not merely unknown.
