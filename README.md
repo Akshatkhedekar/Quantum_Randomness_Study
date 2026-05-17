@@ -40,7 +40,7 @@ This research project demonstrates the fundamental difference between **determin
 
 ### Classical computers CANNOT generate true randomness
 
-Classical computers are **deterministic machines** — they follow strict rules. Every "random" number they generate comes from an algorithm with a hidden pattern.
+Classical computers are **deterministic machines**, they follow strict rules. Every "random" number they generate comes from an algorithm with a hidden pattern.
 "Anyone who considers arithmetical methods of producing random digits is,
 of course, in a state of sin." — John von Neumann
 
