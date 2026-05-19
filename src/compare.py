@@ -65,12 +65,12 @@ print("3. Plotting graphs...")
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
 
 ax1.hist(classical, bins=50, color='skyblue')
-ax1.set_title("Classical (Fake Random)")
+ax1.set_title("Classical (Pseudo-random)")
 ax1.set_xlabel("Number")
 ax1.set_ylabel("Count")
 
 ax2.hist(quantum, bins=50, color='pink')
-ax2.set_title("Quantum (Real Random)")
+ax2.set_title("Quantum (Quantum-generated)")
 ax2.set_xlabel("Number")
 ax2.set_ylabel("Count")
 
