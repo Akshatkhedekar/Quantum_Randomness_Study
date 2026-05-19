@@ -1,8 +1,18 @@
 #  True Randomness Experiment: Quantum vs. Classical RNG
 
-[![Python 3.8+](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
-[![Qiskit](https://img.shields.io/badge/Qiskit-1.0+-purple.svg)](https://qiskit.org/)
-[![Research](https://img.shields.io/badge/Research-Quantum_Cryptography-red.svg)]()
+<p align="center">
+  <a href="https://www.python.org/">
+    <img src="https://img.shields.io/badge/Python-3.8+-blue?logo=python&logoColor=white">
+  </a>
+  &nbsp;
+  <a href="https://qiskit.org/">
+    <img src="https://img.shields.io/badge/Qiskit-1.0+-purple?logo=qiskit&logoColor=white">
+  </a>
+  &nbsp;
+  <a href="#">
+    <img src="https://img.shields.io/badge/Research-Quantum_Cryptography-red?logo=researchgate&logoColor=white">
+  </a>
+</p>
 
 > **"Classical randomness is an illusion. Quantum randomness is reality."**
 
