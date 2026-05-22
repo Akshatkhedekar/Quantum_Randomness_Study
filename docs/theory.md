@@ -8,7 +8,7 @@ To demonstrate the fundamental difference between **deterministic pseudorandom n
 
 ### Classical Pseudorandom Number Generation (PRNG)
 
-Classical computers are deterministic finite-state machines. A PRNG (e.g., Python's `random` module, which uses the Mersenne Twister algorithm) starts from a **seed** (often the system time) and applies a deterministic recurrence.
+Classical computers are deterministic finite-state machines. A PRNG (e.g., NumPy's default generator, which uses the PCG64 algorithm) starts from a **seed** (often the system time) and applies a deterministic recurrence.
 
 **Example (simplified Linear Congruential Generator):**
 
@@ -48,9 +48,9 @@ P(0) = 0.5, P(1) = 0.5
 
 ## Experimental Design Summary
 
-| Feature | Classical (Python `random`) | Quantum (Qiskit simulator) |
-|---------|-----------------------------|-----------------------------|
-| Method | Mersenne Twister | Hadamard gate on \|0⟩, then measure |
+| Feature | Classical (NumPy PCG64) | Quantum (Qiskit simulator) |
+|---------|-------------------------|-----------------------------|
+| Method | PCG64 (Permuted Congruential Generator) | Hadamard gate on \|0⟩, then measure |
 | Randomness type | Algorithmic (pseudo) | Intrinsic (true) |
 | Source of entropy | Seed (deterministic) | Quantum superposition collapse |
 | Reproducible with same seed | Yes | No (even with identical circuit) |
@@ -58,7 +58,7 @@ P(0) = 0.5, P(1) = 0.5
 
 ## Why Quantum Is "Physically Random" (Explanation for Leads)
 
-> **Pseudorandom (Python):**  
+> **Pseudorandom (NumPy PCG64):**  
 > The sequence is **mathematically random** in the sense of passing statistical tests, but it is **reproducible** and **deterministic**. Given the same seed or a few consecutive values, a powerful AI can reverse-engineer the internal state. This is a mathematical illusion of randomness.
 
 > **Quantum (Qiskit):**  
@@ -79,7 +79,7 @@ Do not judge by histogram alone. Run a predictability test (e.g., train an AI on
 
 ## Conclusion
 
-- **Python's `random`** = fast, cheap, but insecure against advanced AI/pattern analysis.
+- **NumPy PCG64** = fast, cheap, but insecure against advanced AI/pattern analysis.
 - **Qiskit's quantum random** = slower (currently), but **provably secure** based on quantum mechanical axioms.
 - For future unbreakable encryption, migrate from PRNGs to QRNGs in security-critical applications.
 

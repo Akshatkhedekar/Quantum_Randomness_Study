@@ -38,11 +38,13 @@
 
 ##  Overview
 
-This research project demonstrates the fundamental difference between **deterministic pseudorandom numbers** (classical computers) and **truly random numbers** (quantum computers). We generate and compare random numbers using:
+This research project demonstrates the fundamental difference between **deterministic pseudorandom numbers** (classical computers) and **truly random numbers** (quantum computers). We generate, analyze, and compare random numbers using:
 
-- **Step 1:** Python's `random` module (Mersenne Twister PRNG)
-- **Step 2:** IBM's Qiskit (quantum superposition measurement)
-- **Step 3:** Statistical visualization and predictability analysis
+- **Step 1:** NumPy's PCG64 (Permuted Congruential Generator) — classical PRNG
+- **Step 2:** IBM's Qiskit with AerSimulator — quantum measurement-based QRNG
+- **Step 3:** Statistical analysis (KS test, entropy, autocorrelation)
+- **Step 4:** Visualization (histograms, KDE, lag plots)
+- **Step 5:** Data persistence (CSV save/load)
 
 ---
 
@@ -83,16 +85,46 @@ true-randomness-experiment/
 │
 ├── README.md                        # Project documentation
 ├── requirements.txt                 # Python dependencies
+├── pytest.ini                       # Test configuration
+│
+├── main.py                          # Entry point — run everything
 │
 ├── src/
-│   ├── classical_rng.py             # Python PRNG numbers
-│   ├── quantum_rng.py               # Qiskit QRNG numbers
-│   └── compare.py                   # Comparing Predictablility  
+│   ├── __init__.py                  # Package init
+│   ├── classical_rng.py             # NumPy PCG64 PRNG
+│   ├── quantum_rng.py               # Qiskit Aer QRNG
+│   ├── compare.py                   # Legacy standalone comparison
+│   ├── analysis.py                  # Statistical tests (KS, entropy, autocorrelation)
+│   ├── data_handler.py              # CSV save/load
+│   └── visualization.py             # Histogram, KDE, lag plots
 │
-├── results/
-│   ├── classical_histogram.png      # Classical random histogram
-│   ├── quantum_histogram.png        # Quantum random histogram
-│   └── comparison.png               # Histogram comparison plot
+├── data/
+│   ├── classical.csv                # Generated classical numbers
+│   └── quantum.csv                  # Generated quantum numbers
+│
+├── outputs/
+│   └── plots/                       # Generated visualizations
+│       ├── histogram.png
+│       ├── kde.png
+│       ├── lag_classical.png
+│       └── lag_quantum.png
+│
+├── results/                         # Previous run outputs
+│   ├── classical_histogram.png
+│   ├── quantum_histogram.png
+│   ├── comparison.png
+│   ├── histogram.png
+│   ├── kde.png
+│   ├── lag_classical.png
+│   └── lag_quantum.png
+│
+├── tests/
+│   ├── conftest.py                  # Shared fixtures
+│   ├── test_classical_rng.py        # Classical PRNG tests
+│   ├── test_quantum_rng.py          # Quantum QRNG tests
+│   ├── test_analysis.py             # Statistical analysis tests
+│   ├── test_data_handler.py         # Data persistence tests
+│   └── test_visualization.py        # Plot generation tests
 │
 └── docs/
     └── theory.md                    # Extended documentation
@@ -102,19 +134,19 @@ true-randomness-experiment/
 
 ### Classical PRNG (Pseudorandom Number Generation)
 
-Python's `random` module uses the **Mersenne Twister** algorithm — a deterministic mathematical formula.
+NumPy's default generator uses the **PCG64** (Permuted Congruential Generator) algorithm — a deterministic mathematical formula with a 128-bit internal state.
 
 **Simplified example (Linear Congruential Generator):**
 |ψ⟩ = α|0⟩ + β|1⟩
 
 
 **Properties:**
--  **Periodic** — Eventually repeats
+-  **Periodic** — Eventually repeats (period 2^128)
 -  **Predictable** — Given state, all future numbers known
 -  **No entropy** — Just mathematical scrambling
 -  **Looks random** — Passes statistical tests
 
-**Security flaw:** If an adversary sees ~624 consecutive outputs, they can reconstruct the entire internal state and predict everything that follows.
+**Security flaw:** PCG64's 128-bit state can be reverse-engineered from consecutive outputs, enabling prediction of all future values.
 
 ---
 
@@ -148,15 +180,15 @@ P(1) = 0.5
 
 ### Comparison Table
 
-| Feature | Classical (Python `random`) | Quantum (Qiskit) |
-|---------|----------------------------|------------------|
-| **Method** | Mersenne Twister | Hadamard gate + measurement |
+| Feature | Classical (NumPy PCG64) | Quantum (Qiskit Aer) |
+|---------|------------------------|----------------------|
+| **Method** | PCG64 (Permuted Congruential Generator) | Hadamard gate + measurement |
 | **Randomness type** | Algorithmic (pseudo) | Intrinsic (true) |
 | **Source of entropy** | Seed (deterministic) | Quantum superposition collapse |
 | **Reproducible with same seed** |  Yes |  No |
-| **Periodic** |  Yes (2^19937-1) |  No |
+| **Periodic** |  Yes (2^128) |  No |
 | **Predictable by AI** |  Yes (with enough samples) |  No (theoretically impossible) |
-| **Speed** |  Very fast (~10M/sec) |  Slow (~1k/sec simulated) |
+| **Speed** |  Very fast (~50M/sec) |  Slow (~1k/sec simulated) |
 | **Security level** |  Low (broken by AI) |  Unbreakable |
 | **Use case** | Games, simulations | Cryptography, QKD |
 
@@ -192,6 +224,50 @@ pip install -r requirements.txt
 # 5. Verify Qiskit installation
 python -c "from qiskit import QuantumCircuit; print('Qiskit ready!')"
  ```
+
+### Usage
+
+Run the main pipeline to generate numbers, perform analysis, and save plots:
+
+```bash
+python main.py
+```
+
+This will:
+- Generate 10,000 classical (PCG64) and 10,000 quantum (AerSimulator) random numbers
+- Save data to `data/classical.csv` and `data/quantum.csv`
+- Compute basic statistics, KS test, entropy, and autocorrelation
+- Demonstrate determinism (classical is seed-reproducible; quantum is not)
+- Save visualizations to `outputs/plots/`
+
+### Running Tests
+
+The project includes a test suite using `pytest`:
+
+```bash
+# Install test dependencies
+pip install pytest
+
+# Run all tests
+pytest
+
+# Run with verbose output
+pytest -v
+
+# Run a specific test file
+pytest tests/test_classical_rng.py
+```
+
+Test coverage includes:
+
+| Module | Tests | What's Verified |
+|--------|-------|-----------------|
+| `classical_rng` | 4 | Count, range, determinism, seed uniqueness |
+| `quantum_rng` | 4 | Bit conversion, count, range |
+| `analysis` | 8 | Stats, KS test, entropy, autocorrelation, determinism demo |
+| `data_handler` | 3 | Save/load roundtrip, missing file, overwrite |
+| `visualization` | 3 | File creation for histogram, KDE, lag plots |
+
 ## Why Quantum is "Physically Random"
 
 Classical PRNGs are mathematically random but deterministic and reproducible. Quantum QRNGs are based on superposition measurement, which is fundamentally unpredictable. Even with perfect knowledge of the quantum circuit, no AI can predict the next bit better than a 50% guess. Hence, quantum randomness comes from nature's inherent indeterminism, not from a hidden algorithm.
